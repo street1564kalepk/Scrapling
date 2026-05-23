@@ -2,6 +2,10 @@
 
 Scraping made easy with auto-adapting selectors, smart element detection,
 and robust parsing capabilities.
+
+Personal fork notes:
+- Forked for learning/personal use
+- Upstream: https://github.com/D4Vinci/Scrapling
 """
 
 __version__ = "0.2.9"
