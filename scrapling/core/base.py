@@ -46,6 +46,8 @@ class TextHandler(str):
             Float representation of the text, or *default* on failure.
         """
         try:
+            # Note: this regex keeps only digits, dots, and minus signs.
+            # It won't handle locale-specific formats like commas as decimal separators.
             return float(re.sub(r"[^\d.\-]", "", self))
         except (ValueError, TypeError):
             return default
@@ -93,59 +95,4 @@ class AttributeHandler(dict):
             key: Attribute name to look up.
             value: When provided, also checks that the attribute equals this value.
 
-        Returns:
-            ``True`` if the attribute (and optional value) matches.
-        """
-        if key not in self:
-            return False
-        return value is None or self[key] == value
-
-
-class BaseParser:
-    """Minimal interface that all Scrapling parser backends must implement.
-
-    Concrete parsers (e.g. Selectolax, lxml, BeautifulSoup wrappers) should
-    subclass ``BaseParser`` and implement the abstract methods below.
-    """
-
-    def __init__(self, html: str, url: Optional[str] = None) -> None:
-        """
-        Args:
-            html: Raw HTML/XML source to parse.
-            url: Optional base URL used for resolving relative links.
-        """
-        self._html = html
-        self._url = url
-
-    # ------------------------------------------------------------------
-    # Subclasses must override these
-    # ------------------------------------------------------------------
-
-    def css(self, selector: str) -> List[Any]:
-        """Return all elements matching a CSS *selector*."""
-        raise NotImplementedError
-
-    def xpath(self, query: str) -> List[Any]:
-        """Return all elements matching an XPath *query*."""
-        raise NotImplementedError
-
-    def find(self, tag: str, attrs: Optional[Dict[str, str]] = None) -> Optional[Any]:
-        """Return the first element matching *tag* and optional *attrs*."""
-        raise NotImplementedError
-
-    def find_all(self, tag: str, attrs: Optional[Dict[str, str]] = None) -> List[Any]:
-        """Return all elements matching *tag* and optional *attrs*."""
-        raise NotImplementedError
-
-    # ------------------------------------------------------------------
-    # Shared helpers available to all parsers
-    # ------------------------------------------------------------------
-
-    @property
-    def url(self) -> Optional[str]:
-        """The base URL associated with this document, if any."""
-        return self._url
-
-    def __repr__(self) -> str:  # pragma: no cover
-        snippet = self._html[:60].replace("\n", " ")
-        return f"<{self.__class__.__name__} url={self._url!r} html={snippet!r}...>"
+        Retu
