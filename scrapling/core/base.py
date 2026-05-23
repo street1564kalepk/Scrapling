@@ -48,6 +48,7 @@ class TextHandler(str):
         try:
             # Note: this regex keeps only digits, dots, and minus signs.
             # It won't handle locale-specific formats like commas as decimal separators.
+            # TODO: consider adding a `locale` param to handle comma-separated decimals
             return float(re.sub(r"[^\d.\-]", "", self))
         except (ValueError, TypeError):
             return default
@@ -92,7 +93,14 @@ class AttributeHandler(dict):
         """Check whether an attribute exists, optionally matching a value.
 
         Args:
-            key: Attribute name to look up.
-            value: When provided, also checks that the attribute equals this value.
+            key: The attribute name to look up.
+            value: If provided, also check that the attribute equals this value.
 
-        Retu
+        Returns:
+            ``True`` if the attribute exists (and matches *value* when given).
+        """
+        if key not in self:
+            return False
+        if value is not None:
+            return self[key] == value
+        return True
